@@ -16,7 +16,7 @@ column_names = [
     "fuelType",
     "year",
     "mileage",
-    "transmission",
+    "tranny",
     "power",
     "price",
     "vehicleConfiguration",
@@ -28,7 +28,7 @@ column_names = [
     "parse date",
 ]
 
-used_columns = ["price", "mileage", "year", "bodyType", "brand", "name"]
+used_columns = ["price", "mileage", "year", "bodyType", "brand", "name", "tranny"]
 
 
 def readlines(fn):
@@ -40,6 +40,22 @@ def readlines(fn):
 
 
 def encode_ordinal(features):
+    a = {}
+    i = 0
+    for x in features:
+        if x not in a:
+            a[x] = i
+            i = i + 1
+
+    def lookup(e):
+        if e in a:
+            return a[e]
+        return i + 1
+
+    return lookup
+
+
+def encode_oh(features):
     a = {}
     i = 0
     for x in features:
@@ -67,25 +83,27 @@ fixers = {
     "brand": encode_ordinal(readlines("brandnames")),
     "bodyType": encode_ordinal(readlines("bodynames")),
     "name": encode_ordinal(readlines("modelnames")),
+    "tranny": encode_ordinal(readlines("trannies")),
 }
 
 
 def load(fn):
     raw = pd.read_csv(
-        fn, names=column_names, sep=",", skipinitialspace=True, quotechar='"'
+        fn,
+        names=column_names,
+        sep=",",
+        skipinitialspace=True,
+        quotechar='"',
+        converters=fixers,
+        usecols=used_columns,
+        on_bad_lines="skip",
+        skiprows=[0],
     )
-    for i in column_names:
-        if i not in used_columns:
-            del raw[i]
-    for i in fixers:
-        if i in used_columns:
-            raw[i] = raw[i].map(fixers[i])
-    raw.tail()
     return raw.dropna()
 
 
-# ds = load("r25_99k.csv")
-ds = load("r25c.csv")
+ds = load("r25_99k.csv")
+# ds = load("r25c.csv")
 
 # sns.pairplot(ds[used_columns])
 # plt.show()
@@ -114,17 +132,16 @@ model = tf.keras.Sequential(
     [
         normalizer,
         k.layers.Dense(units=500, activation="relu"),
+        k.layers.Dense(units=100, activation="relu"),
         k.layers.Dense(units=50, activation="relu"),
-        k.layers.Dense(units=50, activation="relu"),
-        k.layers.Dense(units=10, activation="relu"),
         k.layers.Dense(units=1, activation="relu"),
     ]
 )
 
 model.summary()
 model.compile(
-    optimizer=k.optimizers.Adam(learning_rate=0.05),
-    loss="mean_absolute_error",
+    optimizer=k.optimizers.Adam(learning_rate=0.03),
+    loss="mean_absolute_percentage_error",
 )
 
 # %time
@@ -156,9 +173,11 @@ def plot_loss(history):
 test_predictions = model.predict(test_features).flatten()
 # plot_loss(history)
 # plt.show()
-print(type(test_predictions), type(test_vals))
 errors = test_predictions - test_vals
-plt.hist(errors, bins=100)
-plt.xlabel("Prediction Error (ruble)")
+aerrs = [abs(x) for x in errors]
+percentage_errors = [(x / y) * 100 for (x, y) in zip(errors, test_vals)]
+plt.hist(percentage_errors, bins=100)
+plt.xlabel("Prediction Error %")
 plt.ylabel("Count")
+model.save("last_model")
 plt.show()
