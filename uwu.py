@@ -28,7 +28,19 @@ column_names = [
     "parse date",
 ]
 
-used_columns = ["price", "mileage", "year", "bodyType", "brand", "name", "tranny"]
+# used_columns = ["price", "mileage", "year", "bodyType", "brand", "name", "tranny"]
+used_columns = [
+    "price",
+    "mileage",
+    "year",
+    "bodyType",
+    "brand",
+    "name",
+    "tranny",
+    "power",
+    "engineDisplacement",
+]
+# used_columns = ["price", "mileage", "year", "name"]
 
 
 def readlines(fn):
@@ -149,7 +161,7 @@ model.compile(
 history = model.fit(
     train_features,
     train_vals,
-    epochs=5,
+    epochs=50,
     # Suppress logging.
     verbose=1,
     # Calculate validation results on 20% of the training data.
