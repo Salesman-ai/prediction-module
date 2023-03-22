@@ -117,6 +117,21 @@ def load(fn):
 ds = load("r25_99k.csv")
 # ds = load("r25c.csv")
 
+
+def weird_thing(x):
+    global ds
+    one_hot = pd.get_dummies(ds[x])
+    one_hot.columns = [x + str(i) for i in one_hot.columns]
+    del ds[x]
+    print(one_hot)
+    ds = pd.concat([ds, one_hot], axis=1)
+
+
+weird_thing("tranny")
+weird_thing("brand")
+weird_thing("bodyType")
+# weird_thing("name")
+
 # sns.pairplot(ds[used_columns])
 # plt.show()
 
@@ -143,9 +158,10 @@ normalizer.adapt(np.array(train_features))
 model = tf.keras.Sequential(
     [
         normalizer,
-        k.layers.Dense(units=500, activation="relu"),
+        k.layers.Dense(units=300, activation="relu"),
+        k.layers.Dense(units=300, activation="relu"),
         k.layers.Dense(units=100, activation="relu"),
-        k.layers.Dense(units=50, activation="relu"),
+        k.layers.Dense(units=10, activation="relu"),
         k.layers.Dense(units=1, activation="relu"),
     ]
 )
@@ -187,7 +203,18 @@ test_predictions = model.predict(test_features).flatten()
 # plt.show()
 errors = test_predictions - test_vals
 aerrs = [abs(x) for x in errors]
-percentage_errors = [(x / y) * 100 for (x, y) in zip(errors, test_vals)]
+
+
+def cpct(x, y):
+    a = (x / y) * 100
+    if a > 500:
+        print(x, y, "-> ", a)
+        return None
+    return a
+
+
+percentage_errors = [cpct(x, y) for (x, y) in zip(errors, test_vals)]
+percentage_errors = [x for x in percentage_errors if x is not None]
 plt.hist(percentage_errors, bins=100)
 plt.xlabel("Prediction Error %")
 plt.ylabel("Count")
