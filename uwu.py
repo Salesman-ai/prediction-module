@@ -94,7 +94,7 @@ fixers = {
     "engineDisplacement": read_displacement,
     "brand": encode_ordinal(readlines("brandnames")),
     "bodyType": encode_ordinal(readlines("bodynames")),
-    "name": encode_ordinal(readlines("modelnames")),
+    "name": encode_ordinal(readlines("modelnames200")),
     "tranny": encode_ordinal(readlines("trannies")),
 }
 
@@ -114,8 +114,8 @@ def load(fn):
     return raw.dropna()
 
 
-ds = load("r25_99k.csv")
-# ds = load("r25c.csv")
+# ds = load("r25_99k.csv")
+ds = load("r25c.csv")
 
 
 def weird_thing(x):
@@ -123,15 +123,14 @@ def weird_thing(x):
     one_hot = pd.get_dummies(ds[x])
     one_hot.columns = [x + str(i) for i in one_hot.columns]
     del ds[x]
-    print(one_hot)
     ds = pd.concat([ds, one_hot], axis=1)
 
 
 weird_thing("tranny")
 weird_thing("brand")
 weird_thing("bodyType")
-# weird_thing("name")
-
+weird_thing("name")
+print(ds)
 # sns.pairplot(ds[used_columns])
 # plt.show()
 
