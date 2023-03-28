@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import time
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -18,8 +20,12 @@ def plot_loss(history):
     plt.grid(True)
 
 
-# ds = s.load_csv("r25c.csv")
-ds = s.load_csv("r25_99k.csv")
+start = time.time()
+ds = s.load_csv("r25c.csv")
+# ds = s.load_csv("r25_500k.csv")
+# ds = s.load_csv("r25_100k.csv")
+end = time.time()
+print("elapsed: ", end - start)
 
 train_dataset = ds.sample(frac=0.8, random_state=0)
 test_dataset = ds.drop(train_dataset.index)
@@ -32,12 +38,6 @@ test_vals = test_features.pop("price")
 
 normalizer = k.layers.Normalization(axis=-1)
 normalizer.adapt(np.array(train_features))
-
-# price = np.array(train_features["price"])
-# price_normalizer = k.layers.Normalization(
-#    axis=-1,
-# )
-# price_normalizer.adapt(price)
 
 model = tf.keras.Sequential(
     [
@@ -90,5 +90,4 @@ def test(m):
 
 
 model.save("last_model")
-test(m)
-other =
+# test(model)

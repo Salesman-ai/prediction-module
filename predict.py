@@ -12,18 +12,6 @@ def predict(d):
     return predictions[0]
 
 
-used_columns = [
-    "price",
-    "mileage",
-    "year",
-    "bodyType",
-    "brand",
-    "name",
-    "tranny",
-    "power",
-    "engineDisplacement",
-]
-
 print(
     predict(
         {
