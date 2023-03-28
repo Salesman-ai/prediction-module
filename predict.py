@@ -24,15 +24,17 @@ used_columns = [
     "engineDisplacement",
 ]
 
-predict(
-    {
-        "mileage": 8000,
-        "year": 2000,
-        "bodyType": "open",
-        "brand": "fiat",
-        "name": "124 Spider",
-        "tranny": "automatic",
-        "engineDisplacement": 1.5,
-        "power": 150,
-    }
+print(
+    predict(
+        {
+            "mileage": 8000,
+            "year": 2000,
+            "bodyType": "open",
+            "brand": "fiat",
+            "name": "124 Spider",
+            "tranny": "automatic",
+            "engineDisplacement": 1.9,
+            "power": 150,
+        }
+    )
 )

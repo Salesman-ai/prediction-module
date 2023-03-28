@@ -57,12 +57,11 @@ def dataframize(d):
 def fixup(ds):
     for i in fixers:
         ds[i] = ds[i].map(fixers[i])
-    ds = fixup(ds)
 
     for i in ["tranny", "brand", "bodyType", "name"]:
         ds = weird_thing(i, ds)
-    ds = ds.reindex(sorted(ds.columns), axis=1)
 
+    ds = ds.reindex(sorted(ds.columns), axis=1)
     return ds
 
 

@@ -52,7 +52,7 @@ model = tf.keras.Sequential(
 
 model.summary()
 model.compile(
-    optimizer=k.optimizers.Adam(learning_rate=0.03),
+    optimizer=k.optimizers.Adam(learning_rate=0.02),
     loss="mean_absolute_percentage_error",
 )
 
@@ -67,25 +67,28 @@ hist["epoch"] = history.epoch
 hist.tail()
 
 
-test_predictions = model.predict(test_features).flatten()
-# plot_loss(history)
-# plt.show()
-errors = test_predictions - test_vals
-aerrs = [abs(x) for x in errors]
+def test(m):
+    test_predictions = m.predict(test_features).flatten()
+    # plot_loss(history)
+    # plt.show()
+    errors = test_predictions - test_vals
+    aerrs = [abs(x) for x in errors]
+
+    def cpct(x, y):
+        a = (x / y) * 100
+        if a > 500:
+            print(x, y, "-> ", a)
+            return None
+        return a
+
+    pct_errs = [cpct(x, y) for (x, y) in zip(errors, test_vals)]
+    pct_errs = [x for x in pct_errs if x is not None]
+    plt.hist(pct_errs, bins=100)
+    plt.xlabel("Prediction Error %")
+    plt.ylabel("Count")
+    plt.show()
 
 
-def cpct(x, y):
-    a = (x / y) * 100
-    if a > 500:
-        print(x, y, "-> ", a)
-        return None
-    return a
-
-
-percentage_errors = [cpct(x, y) for (x, y) in zip(errors, test_vals)]
-percentage_errors = [x for x in percentage_errors if x is not None]
-plt.hist(percentage_errors, bins=100)
-plt.xlabel("Prediction Error %")
-plt.ylabel("Count")
 model.save("last_model")
-plt.show()
+test(m)
+other =
