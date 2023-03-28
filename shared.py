@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import regex as re
 
 
 def readlines(fn):
@@ -27,7 +28,8 @@ def encode_ordinal(features):
 
     def one_hot(e):
         j = lookup(e)
-        return np.array([np.float32(i == j) for i in range(i + 2)])
+        a = np.array([np.float32(i == j) for i in range(i + 2)])
+        return a
 
     return one_hot
 
@@ -43,8 +45,8 @@ fixers = {
 def weird_thing(x, ds):
     one_hot = pd.DataFrame(ds[x].to_list())
     one_hot.columns = [x + str(i) for i in one_hot.columns]
+    del ds[x]
     ans = pd.concat([ds, one_hot], axis=1)
-    del ans[x]
     return ans
 
 
@@ -53,26 +55,75 @@ def dataframize(d):
 
 
 def fixup(ds):
+    for i in fixers:
+        ds[i] = ds[i].map(fixers[i])
+    ds = fixup(ds)
+
     for i in ["tranny", "brand", "bodyType", "name"]:
         ds = weird_thing(i, ds)
+    ds = ds.reindex(sorted(ds.columns), axis=1)
+
     return ds
 
 
 def load_dictionary(d):
     ds = dataframize(d)
-    for i in fixers:
-        ds[i] = ds[i].map(fixers[i])
-    ds = fixup(ds)
-    ds = ds.reindex(sorted(ds.columns), axis=1)
-    print(ds)
-    return ds
+    return fixup(ds)
 
 
-def load_csv(x):
-    ds = None
-    for i in fixers:
-        ds[i] = ds[i].map(fixers[i])
+def read_displacement(x):
+    try:
+        return float(re.sub("LTR", "", x))
+    except:
+        return None
+
+
+column_names = [
+    "brand",
+    "name",
+    "bodyType",
+    "color",
+    "fuelType",
+    "year",
+    "mileage",
+    "tranny",
+    "power",
+    "price",
+    "vehicleConfiguration",
+    "engineName",
+    "engineDisplacement",
+    "date",
+    "location",
+    "link",
+    "parse date",
+]
+
+used_columns = [
+    "price",
+    "mileage",
+    "year",
+    "bodyType",
+    "brand",
+    "name",
+    "tranny",
+    "power",
+    "engineDisplacement",
+]
+
+
+def load_csv(fn):
+    ds = pd.read_csv(
+        fn,
+        names=column_names,
+        sep=",",
+        skipinitialspace=True,
+        quotechar='"',
+        converters={"engineDisplacement": read_displacement},
+        usecols=used_columns,
+        on_bad_lines="skip",
+        skiprows=[0],
+    )
+    ds = ds.dropna()
+    ds = ds.reset_index(drop=True)
     ds = fixup(ds)
-    ds = ds.reindex(sorted(ds.columns), axis=1)
-    print(ds)
     return ds
