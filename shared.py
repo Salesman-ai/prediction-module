@@ -28,7 +28,8 @@ def encode_ordinal(features):
 
     def one_hot(e):
         j = lookup(e)
-        a = np.array([np.float32(i == j) for i in range(i + 2)])
+        a = np.zeros(i + 2, dtype=np.float16)
+        np.put(a, j, 1)
         return a
 
     return one_hot
