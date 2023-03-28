@@ -62,18 +62,9 @@ history = model.fit(
     epochs=5,
     validation_split=0.2,
 )
-hist = pd.DataFrame(history.history)
-hist["epoch"] = history.epoch
-hist.tail()
 
 
 def test(m):
-    test_predictions = m.predict(test_features).flatten()
-    # plot_loss(history)
-    # plt.show()
-    errors = test_predictions - test_vals
-    aerrs = [abs(x) for x in errors]
-
     def cpct(x, y):
         a = (x / y) * 100
         if a > 500:
@@ -81,6 +72,8 @@ def test(m):
             return None
         return a
 
+    test_predictions = m.predict(test_features).flatten()
+    errors = test_predictions - test_vals
     pct_errs = [cpct(x, y) for (x, y) in zip(errors, test_vals)]
     pct_errs = [x for x in pct_errs if x is not None]
     plt.hist(pct_errs, bins=100)
