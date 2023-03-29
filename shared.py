@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import json
+import os
 
 import numpy as np
 import pandas as pd
@@ -116,7 +118,10 @@ def read_displacement(x):
         return None
 
 
-def load_csv(fn):
+def load_csv(fn, mapping_file='basic_mapper.json'):
+    column_name_dictionary = json.load(open(os.path.join('column_mappers', mapping_file)))
+    tmp_column_names: [str] = [column_name_dictionary[name] for name in column_names]
+
     ds = pd.read_csv(
         fn,
         names=column_names,
@@ -124,7 +129,7 @@ def load_csv(fn):
         skipinitialspace=True,
         quotechar='"',
         converters={"engineDisplacement": read_displacement},
-        usecols=used_columns,
+        usecols=tmp_column_names,
         on_bad_lines="skip",
         skiprows=[0],
     )
