@@ -120,7 +120,7 @@ def read_displacement(x):
 
 def load_csv(fn, mapping_file='basic_mapper.json'):
     column_name_dictionary = json.load(open(os.path.join('column_mappers', mapping_file)))
-    tmp_column_names: [str] = [column_name_dictionary[name] for name in column_names]
+    tmp_column_names: [str] = [column_name_dictionary[name] for name in used_columns]
 
     ds = pd.read_csv(
         fn,
