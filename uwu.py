@@ -21,9 +21,9 @@ def plot_loss(history):
 
 
 start = time.time()
-ds = s.load_csv("r25c.csv")
+# ds = s.load_csv("r25c.csv")
 # ds = s.load_csv("r25_500k.csv")
-# ds = s.load_csv("r25_100k.csv")
+ds = s.load_csv("r25_100k.csv")
 end = time.time()
 print("elapsed: ", end - start)
 
@@ -59,7 +59,7 @@ model.compile(
 history = model.fit(
     train_features,
     train_vals,
-    epochs=5,
+    epochs=2,
     validation_split=0.2,
 )
 

@@ -28,13 +28,7 @@ def encode_ordinal(features):
             return a[e]
         return i + 1
 
-    def one_hot(e):
-        j = lookup(e)
-        a = np.zeros(i + 2, dtype=np.float16)
-        np.put(a, j, 1)
-        return a
-
-    return one_hot
+    return lookup
 
 
 column_names = [
@@ -80,14 +74,6 @@ fixers = {
 }
 
 
-def weird_thing(x, ds):
-    one_hot = pd.DataFrame(ds[x].to_list())
-    one_hot.columns = [x + str(i) for i in one_hot.columns]
-    del ds[x]
-    ans = pd.concat([ds, one_hot], axis=1)
-    return ans
-
-
 def dataframize(d):
     return pd.DataFrame.from_dict({i: [d[i]] for i in d})
 
@@ -96,10 +82,6 @@ def fixup(ds):
     for i in fixers:
         if i in used_columns:
             ds[i] = ds[i].map(fixers[i])
-
-    for i in fixers:
-        if i in used_columns:
-            ds = weird_thing(i, ds)
 
     ds = ds.reindex(sorted(ds.columns), axis=1)
     print(ds)
@@ -118,8 +100,10 @@ def read_displacement(x):
         return None
 
 
-def load_csv(fn, mapping_file='basic_mapper.json'):
-    column_name_dictionary = json.load(open(os.path.join('column_mappers', mapping_file)))
+def load_csv(fn, mapping_file="basic_mapper.json"):
+    column_name_dictionary = json.load(
+        open(os.path.join("column_mappers", mapping_file))
+    )
     tmp_column_names: [str] = [column_name_dictionary[name] for name in used_columns]
 
     ds = pd.read_csv(
