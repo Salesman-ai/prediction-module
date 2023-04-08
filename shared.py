@@ -65,10 +65,27 @@ used_columns = [
 ]
 
 
+columns_sizes = {
+    "mileage": None,
+    "year": None,
+    "power": None,
+    "engineDisplacement": None,
+    "bodyType": len(readlines("bodynames")),
+    "brand": len(readlines("brandnames")),
+    "name": len(readlines("modelnames")),
+    "tranny": len(readlines("trannies")),
+    "fuelType": len(readlines("fuels")),
+}
+
+
+def to_map(u):
+    return {x: u[x] for x in s.used_columns if x != "price"}
+
+
 fixers = {
     "brand": encode_ordinal(readlines("brandnames")),
     "bodyType": encode_ordinal(readlines("bodynames")),
-    "name": encode_ordinal(readlines("modelnames200")),
+    "name": encode_ordinal(readlines("modelnames")),
     "tranny": encode_ordinal(readlines("trannies")),
     "fuelType": encode_ordinal(readlines("fuels")),
 }
@@ -83,7 +100,7 @@ def fixup(ds):
         if i in used_columns:
             ds[i] = ds[i].map(fixers[i])
 
-    ds = ds.reindex(sorted(ds.columns), axis=1)
+    ds = ds.reindex(used_columns, axis=1)
     print(ds)
     return ds
 
