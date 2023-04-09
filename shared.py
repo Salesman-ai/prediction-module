@@ -79,7 +79,7 @@ columns_sizes = {
 
 
 def to_map(u):
-    return {x: u[x] for x in s.used_columns if x != "price"}
+    return {x: u[x] for x in used_columns if x != "price"}
 
 
 fixers = {
