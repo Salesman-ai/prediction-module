@@ -1,6 +1,4 @@
 from flask import Flask, request, jsonify
-import jsonpickle
-
 
 from predict import predict
 
