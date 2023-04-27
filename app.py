@@ -1,4 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+import jsonpickle
+
 
 from predict import predict
 
@@ -18,7 +20,12 @@ frontend_fixers = {
 }
 
 
-@app.route("/predict/")
+@app.route("/api-prediction/get-predict")
 def hello_world():
     params = {k: frontend_fixers[k](request.args.get(k, "")) for k in frontend_fixers}
-    return predict(params)
+    print(params)
+    return str(predict(params))
+
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8090)
