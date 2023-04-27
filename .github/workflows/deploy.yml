@@ -39,7 +39,6 @@ jobs:
         cp predict.py production-repository/Prediction/predict.py
         cp shared.py production-repository/Prediction/shared.py
         cp trannies production-repository/Prediction/trannies
-        cp uwu.py production-repository/Prediction/uwu.py
 
 
     - name: Commit and push changes to production-repository
