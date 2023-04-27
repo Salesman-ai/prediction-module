@@ -1,0 +1,12 @@
+{
+  "engineDisplacement" : "engineDisplacement",
+  "power" : "power",
+  "tranny" : "tranny",
+  "name" : "name",
+  "brand" : "brand",
+  "bodyType" : "bodyType",
+  "year" : "year",
+  "mileage" : "mileage",
+  "price" : "price",
+  "fuelType" : "fuelType"
+}

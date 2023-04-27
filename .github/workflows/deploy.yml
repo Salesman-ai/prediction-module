@@ -1,0 +1,52 @@
+name: Deploy Prediction to Production-repository
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  copy-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get Prediction repository
+      uses: actions/checkout@v2
+
+    - name: Clone Production repository
+      uses: actions/checkout@v2
+      with:
+        repository: Salesman-ai/production-repository
+        path: /home/runner/work/prediction-module/prediction-module/production-repository
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+    - name: Remove old files from Production repository
+      run: |
+        cd /home/runner/work/prediction-module/prediction-module/production-repository
+        rm -rf Prediction
+        mkdir Prediction
+
+    - name: Copy files from Prediction repo to Production repo
+      run: |
+        cd /home/runner/work/prediction-module/prediction-module
+        cp -R column_mappers production-repository/Prediction/column_mappers
+        cp -R last_model production-repository/Prediction/last_model
+        cp app.py production-repository/Prediction/app.py
+        cp requirements.txt production-repository/Prediction/requirements.txt
+        cp bodynames production-repository/Prediction/bodynames
+        cp brandnames production-repository/Prediction/brandnames
+        cp fuels production-repository/Prediction/fuels
+        cp modelnames production-repository/Prediction/modelnames
+        cp predict.py production-repository/Prediction/predict.py
+        cp shared.py production-repository/Prediction/shared.py
+        cp trannies production-repository/Prediction/trannies
+        cp uwu.py production-repository/Prediction/uwu.py
+
+
+    - name: Commit and push changes to production-repository
+      run: |
+        cd /home/runner/work/prediction-module/prediction-module/production-repository
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Update Prediction folder [via Prediction repository]"
+        git push origin main
