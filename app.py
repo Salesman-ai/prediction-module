@@ -34,16 +34,16 @@ def hello_world():
         if params[key] == '':
             return summary("Missing parameters", 400)
     
-    if params["year"] < 1900:
+    if int(params["year"]) < 1900:
         return summary("Year parameter is too low", 400)
     
-    if params["year"] > 2023:
+    if int(params["year"]) > 2023:
         return summary("Year parameter is too high", 400)
 
-    if params["power"] > 1000:
+    if int(params["power"]) > 1000:
         return summary("Power parameter is too high", 400)
     
-    if params["engineDisplacement"] > 20:
+    if float(params["engineDisplacement"]) > 20:
         return summary("Engine parameter is too high", 400)
 
     return summary(str(predict(params)), 200)
