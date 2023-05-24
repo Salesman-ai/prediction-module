@@ -28,26 +28,26 @@ def hello_world():
     try:
         params = {k: frontend_fixers[k](request.args.get(k, "")) for k in frontend_fixers}
     except Exception as e:
-        return summary("Brak wszystkich danych", 420)
+        return summary("Parameters not specified", 400)
     
     #print(f"\n\n{len(params)}\n\n")
     #print(f"\n\n{params}\n\n")
 
     for key in params:
         if params[key] == '':
-            return summary("Brak wszystkich danych", 414)
+            return summary("Missing parameters", 400)
     
     if params["year"] < 1900:
-        return summary("Za niska wartość year", 415)
+        return summary("Year parameter is too low", 400)
     
     if params["year"] > 2023:
-        return summary("Za wysoka wartość year", 416)
+        return summary("Year parameter is too high", 400)
 
     if params["power"] > 1000:
-        return summary("Za wysoka wartość power", 417)
+        return summary("Power parameter is too high", 400)
     
     if params["engineDisplacement"] > 20:
-        return summary("Za wysoka wartość engine", 418)
+        return summary("Engine parameter is too high", 400)
 
     return summary(str(predict(params)), 200)
 
