@@ -24,7 +24,7 @@ ds = s.load_csv("r25c.csv")
 # ds = s.load_csv("r25_500k.csv")
 # ds = s.load_csv("r25_100k.csv")
 end = time.time()
-print("elapsed: ", end - start)
+#print("elapsed: ", end - start)
 
 train_dataset = ds.sample(frac=0.8, random_state=0)
 test_dataset = ds.drop(train_dataset.index)
@@ -57,7 +57,7 @@ def make_input(x):
 boths = [make_input(i) for i in s.used_columns if i != "price"]
 preprocessed = [x[1] for x in boths]
 inputs = [x[0] for x in boths]
-print("nya")
+#print("nya")
 
 # inputs = k.layers.Concatenate()(inputs)
 x = k.layers.Concatenate()(preprocessed)
@@ -69,7 +69,7 @@ x = k.layers.Dense(8, activation="relu")(x)
 x = k.layers.Dense(1, activation="relu")(x)
 outputs = x
 model = k.Model(inputs={x.name: x for x in inputs}, outputs=outputs, name="meow")
-print("nya")
+#print("nya")
 
 model.summary()
 model.compile(
@@ -77,7 +77,7 @@ model.compile(
     loss="mean_absolute_percentage_error",
 )
 
-print("nya")
+#print("nya")
 
 history = model.fit(
     s.to_map(train_features),
@@ -91,7 +91,7 @@ def test(m):
     def cpct(x, y):
         a = (x / y) * 100
         if a > 500:
-            print(x, y, "-> ", a)
+            #print(x, y, "-> ", a)
             return None
         return a
 

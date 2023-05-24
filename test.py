@@ -14,4 +14,4 @@ frontend_fixers = {
 
 a = requests.get("http://127.0.0.1:5000/api-prediction/get-predict", params=frontend_fixers)
 
-print(a.text)
+# print(a.text)

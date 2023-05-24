@@ -101,7 +101,7 @@ def fixup(ds):
             ds[i] = ds[i].map(fixers[i])
 
     ds = ds.reindex(used_columns, axis=1)
-    print(ds)
+    # print(ds)
     return ds
 
 
