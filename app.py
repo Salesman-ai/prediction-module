@@ -29,9 +29,6 @@ def hello_world():
         params = {k: frontend_fixers[k](request.args.get(k, "")) for k in frontend_fixers}
     except Exception as e:
         return summary("Parameters not specified", 400)
-    
-    #print(f"\n\n{len(params)}\n\n")
-    #print(f"\n\n{params}\n\n")
 
     for key in params:
         if params[key] == '':
